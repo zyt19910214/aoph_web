@@ -1,0 +1,76 @@
+
+
+<title>评论管理</title>
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>营销</cite></a>
+    <a><cite>商城管理</cite></a>
+    <a><cite>服务列表</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-form layui-card-header layuiadmin-card-header-auto" lay-filter="app-content-comment">
+      <div class="layui-form-item">
+
+        <div class="layui-inline">
+          <label class="layui-form-label">服务名称</label>
+          <div class="layui-input-inline">
+            <input type="text" name="servername" placeholder="请输入服务名称" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+
+      <div class="layui-inline">
+       <label class="layui-form-label">服务分类</label>
+        <div class="layui-input-inline">
+        <script type="text/html" template>
+          <select name="type" >
+            <option value="">请选择服务分类</option>
+            <option value="1" {{ d.params.type === '团建活动' ? 'selected' : '' }}>团建活动</option>
+            <option value="2" {{ d.params.type === '生日趴' ? 'selected' : '' }}>生日趴</option>
+            <option value="3" {{ d.params.type === '求婚趴' ? 'selected' : '' }}>求婚趴</option>
+            <option value="4" {{ d.params.type === '交友趴' ? 'selected' : '' }}>交友趴</option>
+             <option value="5" {{ d.params.type === '家庭趴' ? 'selected' : '' }}>家庭趴</option>
+          </select>
+        </script>
+        </div>
+      </div>
+
+        <div class="layui-inline">
+          <button class="layui-btn layuiadmin-btn-comm" data-type="reload" lay-submit lay-filter="LAY-app-contcomm-search">
+            <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="layui-card-body">
+      <div style="padding-bottom: 10px;">
+       <button class="layui-btn layuiadmin-btn-comm" data-type="add2">添加</button>
+        <button class="layui-btn layuiadmin-btn-comm" data-type="batchdel2">删除</button>
+      </div>
+      <table id="LAY-app-content-comm" lay-filter="LAY-app-content-comm"></table>
+      <script type="text/html" id="table-content-com">
+        <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>
+      </script>
+    </div>
+  </div>
+</div>
+
+
+<script>
+layui.use('contlist', layui.factory('contlist')).use(['admin', 'contlist', 'table'], function(){
+  var $ = layui.$
+  ,admin = layui.admin
+  ,view = layui.view
+  ,table = layui.table
+  ,form = layui.form;
+
+  form.render(null, 'app-content-comment');
+
+
+});
+</script>

@@ -1,0 +1,86 @@
+/*
+* @Author: name
+* @Date:   2019-03-29 23:28:13
+* @Last Modified by:   name
+* @Last Modified time: 2019-05-26 16:03:09
+*/
+.line-input-80{
+    display:inline-block;
+    width:80%;
+}
+.image-textarea{
+    min-height: 200px;
+    height: auto;
+    line-height: 20px;
+    padding: 6px 10px;
+    resize: vertical;
+    width: 95%;
+    margin-left: 5%;
+}
+#upload_img_list {
+    margin: 10px 0 0 0
+}
+#upload_img_list dd {
+    position: relative;
+    margin: 0 10px 10px 0;
+    float: left
+}
+#upload_img_list .operate {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 1
+}
+#upload_img_list .operate i {
+    cursor: pointer;
+    background: #2F4056;
+    padding: 2px;
+    line-height: 15px;
+    text-align: center;
+    color: #fff;
+    margin-left: 1px;
+    float: left;
+    filter: alpha(opacity=80);
+    -moz-opacity: .8;
+    -khtml-opacity: .8;
+    opacity: .8
+}
+#upload_img_list2 {
+    clear: both;
+    margin-left: 30px;
+}
+
+#upload_img_list2 img {
+    border: 1px solid gray;
+    height: 150px;
+    width: 150px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+
+#upload_img_list img {
+    border: none;
+    margin-left: 40px;
+}
+
+
+td div[class$="avatar"]{
+    height: 80px;
+    line-height: 80px;
+}
+
+td div[class$="-9"] {
+    height: auto;
+    margin-left: 20px; 
+}
+
+td div[class$="-9"] a {
+    /* display: inline-block; */
+    float: left;
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+.layui-own1 {
+    margin-left: 110px;
+}

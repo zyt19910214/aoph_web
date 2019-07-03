@@ -1,0 +1,86 @@
+
+
+  <title>商品列表</title>
+
+  <div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+      <a lay-href="">主页</a>
+      <a><cite>商城管理</cite></a>
+      <a><cite>商品管理</cite></a>
+    </div>
+  </div>
+
+  <div class="layui-fluid">
+    <div class="layui-card">
+      <div class="layui-form layui-card-header layuiadmin-card-header-auto" lay-filter="app-content-list">
+        <div class="layui-form-item">
+          <div class="layui-inline">
+            <label class="layui-form-label">商品名称</label>
+            <div class="layui-input-inline">
+              <input type="text" name="title" placeholder="请输入商品名称" autocomplete="off" class="layui-input">
+            </div>
+          </div>
+          <div class="layui-inline">
+            <label class="layui-form-label">商品分类</label>
+
+            <div class="layui-input-inline">
+                <div class="layui-form">
+              <select  class="form-control input-sm" name="category" id="sss" lay-filter="category" aria-invalid="false">
+                <option value="">请选择商品分类</option>
+              </select>
+            </div> 
+            </div>
+          </div>
+          <div class="layui-inline">
+            <button class="layui-btn layuiadmin-btn-list" lay-submit lay-filter="LAY-app-contlist-search">
+              <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="layui-card-body">
+        <div style="padding-bottom: 10px;">
+          <button class="layui-btn layuiadmin-btn-list" data-type="add">添加商品</button>
+          <button class="layui-btn layuiadmin-btn-list layui-btn-normal" data-type="batchground">批量上架</button>
+          <button class="layui-btn layuiadmin-btn-list layui-btn-danger" data-type="batchdel">批量下架</button>
+
+
+        </div>
+        <table id="LAY-app-content-list" lay-filter="LAY-app-content-list" ></table>
+         <script type="text/html" id="imgTpl"> 
+          <img style="display: inline-block; width: 100%; height: 100%;" alt="无预览图" src= {{ d.img_url }}>
+        </script> 
+        <script type="text/html" id="buttonTpl">
+          {{#  if(d.status==1 ){ }}
+            <button class="layui-btn layui-btn-xs" style="width:80px;">已上架</button>
+          {{#  } else if(d.status==2) { }}
+            <button class="layui-btn layui-btn-warm layui-btn-xs" style="width:80px;">已下架</button>
+          {{#  }else{ }}
+            <button class="layui-btn layui-btn-danger layui-btn-xs " style="width:80px;">未知状态</button>
+          {{#  } }}
+        </script>
+        <script type="text/html" id="table-content-list">
+          <!-- <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>上架商品</a> -->
+          <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="ground"><i class="layui-icon layui-icon-edit"></i>上架商品</a>
+          <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>下架商品</a>
+        </script>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  layui.use('contlist', layui.factory('contlist')).use(['admin', 'contlist', 'table','laydate'], function(){
+    var $ = layui.$
+    ,admin = layui.admin
+    ,view = layui.view
+    ,table = layui.table
+    ,laydate = layui.laydate
+    ,form = layui.form;
+
+
+    form.render(null, 'app-content-list');
+
+
+  });
+  </script>

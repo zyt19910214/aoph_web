@@ -1,0 +1,176 @@
+
+  <div class="layui-form" lay-filter="layuiadmin-app-form-list" id="layuiadmin-app-form-list" style="padding: 20px 30px 0 0;">
+    <div class="layui-form-item">
+      <label class="layui-form-label">商品名称</label>
+
+        <script type="text/html" template>
+          <input type="text" name="title" value="{{ d.params.name || '' }}" lay-verify="required" placeholder="请输入商品名称" autocomplete="off" class="layui-input line-input-80">
+        </script>
+
+    </div>
+
+    <div class="layui-form-item">
+      <label class="layui-form-label">商品分类</label>
+      <div class="line-input-80">
+
+        <script type="text/html" template>
+          <select name="type" lay-verify="required">
+            <option value="">请选择商品分类</option>
+            <option value="1" {{ d.params.type === '饮料' ? 'selected' : '' }}>饮料</option>
+            <option value="2" {{ d.params.type === '酒水' ? 'selected' : '' }}>酒水</option>
+            <option value="3" {{ d.params.type === '简餐' ? 'selected' : '' }}>简餐</option>
+            <option value="4" {{ d.params.type === '火锅' ? 'selected' : '' }}>火锅</option>
+          </select>
+        </script>
+      </div>
+    </div>
+     <div class="layui-form-item">
+      <label class="layui-form-label">商品单价</label>
+
+        <script type="text/html" template>
+          <input type="text" name="price" value="{{ d.params.price || '' }}" lay-verify="required" placeholder="商品单价" autocomplete="off" class="layui-input line-input-80" >
+        </script>
+
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">商品原价</label>
+
+        <script type="text/html" template>
+          <input type="text" name="origin_price" value="{{ d.params.origin_price || '' }}" lay-verify="required" placeholder="商品原价" autocomplete="off" class="layui-input line-input-80" >
+        </script>
+
+    </div>
+
+
+    <div class="layui-form-item">
+      <label class="layui-form-label">商品图片</label>
+
+      <div class="layui-input-inline layui-btn-container">
+
+          <button type="button" class="layui-btn layui-btn-primary" id="upload_img">
+            <i class="layui-icon"></i>上传图片
+          </button>
+          <script type="text/html" template>
+          <input type="hidden" name="image_url" id="image_url" lay-verify="url"  autocomplete="off" placeholder="" >
+        </script>
+
+      </div>
+      <div id="upload_img_list">  <img class="layui-upload-img" id="image_view"></div>
+
+
+    </div>
+     <div class="layui-form-item">
+      <label class="layui-form-label">介绍图片</label>
+
+
+      <div class="layui-input-inline layui-btn-container">
+
+
+          <button type="button" class="layui-btn layui-btn-primary" id="upload_img2">
+                  <i class="layui-icon"></i>上传图片
+                </button>
+
+
+      </div>
+
+          <div  id="upload_img_list2" ></div>
+          <input type="hidden" name="image_url2" id="image_url2"  value="" autocomplete="off" placeholder="" >
+      
+      <textarea name="bz" class="image-textarea" placeholder="请输入商品简介" class="layui-textarea" ></textarea>
+    </div>
+
+
+    <script type="text/html" template>
+      <input type="hidden" name="id" value="{{ d.params.id || '' }}">
+    </script>
+    <div class="layui-form-item">
+      <label class="layui-form-label"></label>
+      <div class="layui-input-inline">
+        <input type="button" lay-submit lay-filter="layuiadmin-app-form-submit" value="确认" class="layui-btn">
+      </div>
+    </div>
+</div>
+
+<script>
+/*
+上传参数设定
+*/
+var upurl = "http://127.0.0.1:8888/uploadImage/";//上传图片地址
+var duotu = false;//是否为多图上传true false
+
+/*
+上传图片
+*/
+
+layui.use('upload', function() {
+  var $ = layui.jquery
+  upload = layui.upload;
+  //普通图片上传
+  var uploadInst = upload.render({
+    elem: '#upload_img'
+    ,url: upurl
+    ,accept: 'images'
+    ,before: function(obj){
+      //预读本地文件示例，不支持ie8
+      obj.preview(function(index, file, result){
+
+
+       
+      }); 
+    }
+    ,done: function(res){
+      console.log(res);
+      $('#image_view').attr('src', res['data']['image_url']); //图片链接（base64）
+      $('#image_url').attr('value', res['data']['image_url']); 
+      //如果上传失败
+      if(res.code > 0){
+        return layer.msg('上传失败');
+      }
+      //上传成功
+    }
+    ,error: function(){
+      //演示失败状态，并实现重传
+      var demoText = $('#demoText');
+      demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+      demoText.find('.demo-reload').on('click', function(){
+        uploadInst.upload();
+      });
+    }
+  });
+  //multiple
+  var uploadInst = upload.render({
+    elem: '#upload_img2'
+    ,url: upurl
+    ,accept: 'images'
+    ,multiple:true
+    ,auto:true//自动上传
+    ,before: function(obj){ 
+      //预读本地文件示例，不支持ie8
+      obj.preview(function(index, file, result){
+        
+      });
+    }
+    ,done: function(res){
+      $('#upload_img_list2').append('<img src="'+  res['data']['image_url'] +'" alt=111"' +'" class="layui-upload-img">')
+      var s = $('#image_url2').val()
+      //console.log(s)
+      s = s +','+res['data']['image_url']
+      $('#image_url2').attr('value',s); 
+    }
+    
+    ,error: function(){
+      //演示失败状态，并实现重传
+      var demoText = $('#demoText');
+      demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+      demoText.find('.demo-reload').on('click', function(){
+        uploadInst.upload();
+      });
+    }
+  });
+});
+
+
+
+
+
+</script>

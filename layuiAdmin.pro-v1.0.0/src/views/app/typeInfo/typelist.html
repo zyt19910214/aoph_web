@@ -1,0 +1,43 @@
+
+
+<title>评论管理</title>
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>商城管理</cite></a>
+    <a><cite>分类管理</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    
+    <div class="layui-card-body">
+      <div style="padding-bottom: 10px;">
+       <button class="layui-btn layuiadmin-btn-comm" data-type="add2">添加</button>
+        <button class="layui-btn layuiadmin-btn-comm" data-type="batchdel2">删除</button>
+      </div>
+      <table id="LAY-app-content-comm" lay-filter="LAY-app-content-comm"></table>
+      <script type="text/html" id="table-content-com">
+        <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>
+      </script>
+    </div>
+  </div>
+</div>
+
+
+<script>
+layui.use('contlist', layui.factory('contlist')).use(['admin', 'contlist', 'table'], function(){
+  var $ = layui.$
+  ,admin = layui.admin
+  ,view = layui.view
+  ,table = layui.table
+  ,form = layui.form;
+
+  form.render(null, 'app-content-comment');
+
+
+});
+</script>

@@ -1,0 +1,83 @@
+
+
+  <title>商品列表</title>
+
+  <div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+      <a lay-href="">主页</a>
+      <a><cite>商城管理</cite></a>
+      <a><cite>公告管理</cite></a>
+    </div>
+  </div>
+
+  <div class="layui-fluid">
+    <div class="layui-card">
+   
+
+      <div class="layui-card-body">
+       <div class="layui-form" lay-filter="layuiadmin-app-form-list" id="layuiadmin-app-form-list" style="padding: 20px 30px 0 0;">
+        
+         <div class="layui-own1">
+
+
+            <script type="text/html" template>
+              <blockquote class="layui-elem-quote" id="ad">暂无公告</blockquote>
+             
+            </script>
+         
+        </div>
+      <div class="layui-form-item layui-form-text" >
+          <div class="layui-input-block">
+            <textarea placeholder="请输入公告内容" class="layui-textarea" id="ad_add" lay-verify="required"></textarea>
+          </div>
+        </div>
+          
+      </div>
+        <div style="padding-bottom: 10px;width: 100px;margin-left: 109px;">
+          <button class="layui-btn layuiadmin-btn-list" data-type="add3">添加公告</button>
+        </div>
+        
+        
+      </div>
+    </div>
+  </div>
+
+  <script>
+  layui.use('contlist', layui.factory('contlist')).use(['admin', 'contlist', 'table','laydate'], function(){
+    var $ = layui.$
+    ,admin = layui.admin
+    ,view = layui.view
+    ,table = layui.table
+    ,setter = layui.setter
+    ,laydate = layui.laydate
+    ,form = layui.form;
+
+
+     $.ajax({
+          url: setter.http + 'listAd/',
+          type: 'GET',
+          error: function(request) { //请求失败之后的操作
+            layer.alert("获取公告失败，请联系管理员", {
+              icon: 2
+            });
+          },
+          success: function(data) { //请求成功之后的操作
+
+            if (data['code'] == 0) {
+            
+              $("#ad").html("当前公告：　"+data['data'])
+              
+            } else if (data['code'] == 2){
+             
+            }else{
+              layer.alert("获取公告失败，请联系管理员", {
+              icon: 2
+            });
+            }
+          }
+
+        });
+
+
+  });
+  </script>
