@@ -50,6 +50,7 @@
           <button type="button" class="layui-btn layui-btn-primary" id="upload_img">
             <i class="layui-icon"></i>上传图片
           </button>
+          <button id="btnHide"></button>
           <script type="text/html" template>
           <input type="hidden" name="image_url" id="image_url" lay-verify="url"  autocomplete="off" placeholder="" >
         </script>
@@ -102,6 +103,89 @@ var duotu = false;//是否为多图上传true false
 上传图片
 */
 
+layui.config({
+  base: '/start/layui/lay/'
+ }).extend({
+  photoZip: 'plug/photoZip',
+ }).use(['upload', 'photoZip'], function () {
+  var upload = layui.upload;
+  var $ = layui.$,
+  photoZip = layui.photoZip;
+
+  var uploadInst = upload.render({
+      elem: '#upload_img',
+      accept: 'file',
+      exts: 'jpg|jpge|gif|png',
+      size: 1024 * 10,
+      url: upurl,
+      auto: false,
+      bindAction: "#btnHide",
+      multiple: true,
+      choose: function (obj) {
+        var files = this.files = obj.pushFile();
+        var oindex,
+        indexArr = [];
+        for (oindex in files) {
+          indexArr.push(oindex);
+        };
+        eindex = 0;
+        star = 0;
+        var len = indexArr.length;
+        obj.preview(function (index, file, result) {
+          try {
+            if (file.size > 800 * 1024) {
+              (star == 0) && layer.msg("照片压缩中...", {
+                time: false
+              }, star = 1);
+              photoZip.photoCompress(file, {
+                quality: 0.6,
+                width: 1000
+              }, function (base64Codes) {
+                delete files[index];
+                obj.resetFile(index, photoZip.convertBase64UrlToBlob(base64Codes), file.name);
+                eindex++;
+                console.log(eindex);
+                console.log(len);
+                if (eindex == len) {
+                  layer.msg("全部照片已经压缩成功", function () {
+                    layer.msg("开始上传...", {
+                      time: 200
+                    });
+                    $("#btnHide").trigger("click");
+                  });
+                }
+              });
+            }
+          } catch (e) {
+            layer.msg("全部照片已经压缩成功", function () {
+              layer.msg("catch开始上传...", {
+                time: false
+              });
+              $("#btnHide").trigger("click");
+            });
+          }
+        })
+      },
+      before: function (obj) {
+        
+      },
+      allDone: function (obj) {
+        
+      },
+      done: function (res, index, upload) {
+        delete this.files[index];
+        console.log(res);
+         $('#image_view').attr('src', res['data']['image_url']); //图片链接（base64）
+         $('#image_url').attr('value', res['data']['image_url']); 
+        //如果上传失败
+        if(res.code > 0){
+          return layer.msg('上传失败');
+        }
+        
+      }
+    });
+ });
+/*
 layui.use('upload', function() {
   var $ = layui.jquery
   upload = layui.upload;
@@ -113,8 +197,6 @@ layui.use('upload', function() {
     ,before: function(obj){
       //预读本地文件示例，不支持ie8
       obj.preview(function(index, file, result){
-
-
        
       }); 
     }
@@ -167,7 +249,7 @@ layui.use('upload', function() {
       });
     }
   });
-});
+});*/
 
 
 
