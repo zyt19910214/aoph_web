@@ -12,16 +12,13 @@
     <div class="layui-form-item">
       <label class="layui-form-label">商品分类</label>
       <div class="line-input-80">
-
-        <script type="text/html" template>
-          <select name="type" lay-verify="required">
-            <option value="">请选择商品分类</option>
-            <option value="1" {{ d.params.type === '饮料' ? 'selected' : '' }}>饮料</option>
-            <option value="2" {{ d.params.type === '酒水' ? 'selected' : '' }}>酒水</option>
-            <option value="3" {{ d.params.type === '简餐' ? 'selected' : '' }}>简餐</option>
-            <option value="4" {{ d.params.type === '火锅' ? 'selected' : '' }}>火锅</option>
-          </select>
-        </script>
+         
+                <div class="layui-form">
+              <select  class="form-control input-sm" name="category" id="sss1" lay-filter="category" aria-invalid="false">
+                <option value="">请选择商品分类</option>
+              </select>
+     
+            </div>
       </div>
     </div>
      <div class="layui-form-item">
@@ -32,14 +29,14 @@
         </script>
 
     </div>
-    <div class="layui-form-item">
+ <!--    <div class="layui-form-item">
       <label class="layui-form-label">商品原价</label>
 
         <script type="text/html" template>
           <input type="text" name="origin_price" value="{{ d.params.origin_price || '' }}" lay-verify="required" placeholder="商品原价" autocomplete="off" class="layui-input line-input-80" >
         </script>
 
-    </div>
+    </div> -->
 
 
     <div class="layui-form-item">
@@ -50,7 +47,7 @@
           <button type="button" class="layui-btn layui-btn-primary" id="upload_img">
             <i class="layui-icon"></i>上传图片
           </button>
-          <button id="btnHide"></button>
+          <button style="display:none;" id="btnHide"></button>
           <script type="text/html" template>
           <input type="hidden" name="image_url" id="image_url" lay-verify="url"  autocomplete="off" placeholder="" >
         </script>
@@ -66,7 +63,7 @@
 
       <div class="layui-input-inline layui-btn-container">
 
-
+           <button style="display:none;" id="btnHide2"></button>
           <button type="button" class="layui-btn layui-btn-primary" id="upload_img2">
                   <i class="layui-icon"></i>上传图片
                 </button>
@@ -99,6 +96,8 @@
 var upurl = "http://127.0.0.1:8888/uploadImage/";//上传图片地址
 var duotu = false;//是否为多图上传true false
 
+
+
 /*
 上传图片
 */
@@ -110,7 +109,43 @@ layui.config({
  }).use(['upload', 'photoZip'], function () {
   var upload = layui.upload;
   var $ = layui.$,
+  setter = layui.setter,
+  form = layui.form,
   photoZip = layui.photoZip;
+
+
+
+  $.ajax({
+      //url: './json/content/tags.js', //模拟接口
+      url: setter.http + 'listServer/',
+      type: 'GET',
+      dataType:"json",
+      error: function(data) {
+        layer.alert("分类获取失败！", {
+          icon: 2
+        });
+
+      },
+      success: function(data) {
+        d_value = data['data']
+        console.log(d_value);
+        for(var i=0;i<d_value.length;i++){
+           $("#sss1").append('<option value="' +d_value[i].id+'">'+d_value[i].name+'</option>')
+        }
+        form.render();
+        var category = 0;
+        var categoryName = '';
+        form.on('select(category)', function (data) {
+            category = data.value;
+            categoryName = data.elem[data.elem.selectedIndex].text;
+            form.render('select');
+        });
+      }
+    });
+
+
+
+
 
   var uploadInst = upload.render({
       elem: '#upload_img',
@@ -133,35 +168,32 @@ layui.config({
         var len = indexArr.length;
         obj.preview(function (index, file, result) {
           try {
-            if (file.size > 800 * 1024) {
+            if (file.size/1024 > 100) {
               (star == 0) && layer.msg("照片压缩中...", {
                 time: false
               }, star = 1);
               photoZip.photoCompress(file, {
-                quality: 0.6,
+                quality: 0.5,
                 width: 1000
               }, function (base64Codes) {
                 delete files[index];
                 obj.resetFile(index, photoZip.convertBase64UrlToBlob(base64Codes), file.name);
                 eindex++;
-                console.log(eindex);
-                console.log(len);
+                //console.log(eindex);
+                //console.log(len);
                 if (eindex == len) {
-                  layer.msg("全部照片已经压缩成功", function () {
-                    layer.msg("开始上传...", {
-                      time: 200
-                    });
-                    $("#btnHide").trigger("click");
+                  layer.msg("上传图片成功", function () {
+                  
                   });
+                  
                 }
               });
+
             }
+             $("#btnHide").trigger("click");
           } catch (e) {
-            layer.msg("全部照片已经压缩成功", function () {
-              layer.msg("catch开始上传...", {
-                time: false
-              });
-              $("#btnHide").trigger("click");
+            layer.msg("异常，请联系管理员！", function () {
+             
             });
           }
         })
@@ -184,7 +216,79 @@ layui.config({
         
       }
     });
+   var uploadInst = upload.render({
+      elem: '#upload_img2',
+      accept: 'file',
+      exts: 'jpg|jpge|gif|png',
+      size: 1024 * 10,
+      url: upurl,
+      auto: false,
+      bindAction: "#btnHide2",
+      multiple: true,
+      choose: function (obj) {
+        var files = this.files = obj.pushFile();
+        var oindex,
+        indexArr = [];
+        for (oindex in files) {
+          indexArr.push(oindex);
+        };
+        eindex = 0;
+        star = 0;
+        var len = indexArr.length;
+        obj.preview(function (index, file, result) {
+          try {
+            if (file.size/1024 > 100) {
+              (star == 0) && layer.msg("照片压缩中...", {
+                time: false
+              }, star = 1);
+              photoZip.photoCompress(file, {
+                quality: 0.5,
+                width: 1000
+              }, function (base64Codes) {
+                delete files[index];
+                obj.resetFile(index, photoZip.convertBase64UrlToBlob(base64Codes), file.name);
+                eindex++;
+                //console.log(eindex);
+                //console.log(len);
+                if (eindex == len) {
+                  layer.msg("上传图片成功", function () {
+                  
+                  });
+                  
+                }
+              });
+
+            }
+             $("#btnHide2").trigger("click");
+          } catch (e) {
+            layer.msg("异常，请联系管理员！", function () {
+             
+            });
+          }
+        })
+      },
+      before: function (obj) {
+        
+      },
+      allDone: function (obj) {
+        
+      },
+      done: function (res, index, upload) {
+        delete this.files[index];
+        $('#upload_img_list2').append('<img src="'+  res['data']['image_url'] +'" alt=111"' +'" class="layui-upload-img">')
+        var s = $('#image_url2').val()
+        //console.log(s)
+        s = s +','+res['data']['image_url']
+        $('#image_url2').attr('value',s); 
+        //如果上传失败
+        if(res.code > 0){
+          return layer.msg('上传失败');
+        }
+        
+      }
+    });
  });
+ 
 /*
 layui.use('upload', function() {
   var $ = layui.jquery

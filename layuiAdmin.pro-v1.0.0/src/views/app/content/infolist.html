@@ -42,8 +42,10 @@
       <div class="layui-card-body">
         <div style="padding-bottom: 10px;">
           <button class="layui-btn layuiadmin-btn-list" data-type="add">添加商品</button>
+
           <button class="layui-btn layuiadmin-btn-list layui-btn-normal" data-type="batchground">批量上架</button>
           <button class="layui-btn layuiadmin-btn-list layui-btn-danger" data-type="batchdel">批量下架</button>
+          <button class="layui-btn layuiadmin-btn-list layui-btn-warm" data-type="batdelonsale">清除所有特价</button>
 
 
         </div>
@@ -51,19 +53,39 @@
          <script type="text/html" id="imgTpl"> 
           <img style="display: inline-block; width: 100%; height: 100%;" alt="无预览图" src= {{ d.img_url }}>
         </script> 
+        <script type="text/html" id="buttonTpl2">
+          {{#  if(d.origin_price!=0 ){ }}
+            <button class="layui-btn layui-btn-danger  layui-btn-xs" style="width:80px;">特价：{{d.origin_price}}元</button>
+        
+          {{#  }else{ }}
+            <button class="layui-btn layui-btn-primary layui-btn-xs " style="width:80px;">原价</button>
+          {{#  } }}
+        </script>
         <script type="text/html" id="buttonTpl">
           {{#  if(d.status==1 ){ }}
-            <button class="layui-btn layui-btn-xs" style="width:80px;">已上架</button>
+            <button class="layui-btn layui-btn-xs " style="width:80px;">已上架</button>
           {{#  } else if(d.status==2) { }}
-            <button class="layui-btn layui-btn-warm layui-btn-xs" style="width:80px;">已下架</button>
+            <button class="layui-btn layui-btn-warm  layui-btn-xs" style="width:80px;">已下架</button>
           {{#  }else{ }}
             <button class="layui-btn layui-btn-danger layui-btn-xs " style="width:80px;">未知状态</button>
           {{#  } }}
         </script>
         <script type="text/html" id="table-content-list">
           <!-- <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>上架商品</a> -->
+          {{#  if(d.origin_price==0 ){ }}
+          <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="onsale"><i class="layui-icon layui-icon-edit"></i>商品特价</a>
+          <!-- <a class="layui-btn layui-btn-warm layui-btn-xs layui-btn-disabled" ><i class="layui-icon layui-icon-delete"></i>清除特价</a> -->
+           {{#  }else{ }}
+           <!-- <a class="layui-btn layui-btn-primary layui-btn-xs layui-btn-disabled" ><i class="layui-icon layui-icon-edit"></i>商品特价</a> -->
+          <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="delonsale"><i class="layui-icon layui-icon-delete"></i>清除特价</a>
+            {{#  } }}
+           {{#  if(d.status==2 ){ }}
           <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="ground"><i class="layui-icon layui-icon-edit"></i>上架商品</a>
+             <!--  <a class="layui-btn layui-btn-danger layui-btn-xs layui-btn-disabled" ><i class="layui-icon layui-icon-delete"></i>下架商品</a> -->
+           {{#  }else{ }}
+          <!--  <a class="layui-btn layui-btn-normal layui-btn-xs layui-btn-disabled"><i class="layui-icon layui-icon-edit"></i>上架商品</a> -->
           <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>下架商品</a>
+           {{#  } }}
         </script>
       </div>
     </div>

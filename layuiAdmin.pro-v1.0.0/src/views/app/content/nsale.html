@@ -1,0 +1,27 @@
+  <div class="layui-form" lay-filter="layuiadmin-app-form-list" id="layuiadmin-app-form-list" style="padding: 20px 30px 0 0;">
+  
+    <div class="layui-form-item">
+      <label class="layui-form-label">商品原价</label>
+      <div class="layui-input-inline">
+        <script type="text/html" template>
+          <input type="hidden" name="id" value="{{ d.params.id || '' }}" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" >
+          <input type="text" name="price" value="{{ d.params.price || '' }}" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" disabled>
+        </script>
+      </div>
+    </div>
+      <div class="layui-form-item">
+      <label class="layui-form-label">商品特价</label>
+      <div class="layui-input-inline">
+        <script type="text/html" template>
+          <input type="text" name="origin_price" value="" lay-verify="required" placeholder="请输入本次商特价" autocomplete="off" class="layui-input" >
+        </script>
+      </div>
+    </div>
+
+    <div class="layui-form-item">
+
+      <div class="layui-input-block" style="float:right;margin-right:10px">
+        <input type="button" lay-submit lay-filter="layuiadmin-app-form-submit" value="确认" class="layui-btn" >
+      </div>
+    </div>
+</div>

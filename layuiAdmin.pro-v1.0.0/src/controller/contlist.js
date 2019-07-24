@@ -48,19 +48,20 @@ layui.define(['table', 'form', 'laydate'], function(exports) {
         minWidth: 100,
         align: 'center',
         templet: '#imgTpl'
-      }, {
+      },{
+        field: 'type',
+        title: '商品分类',
+        align: 'center'
+      },{
         field: 'price',
         title: '商品价格(元)',
         minWidth: 100,
         align: 'center'
       }, {
         field: 'origin_price',
-        title: '商品原价(元)',
+        title: '特价状态',
+        templet: '#buttonTpl2',
         minWidth: 100,
-        align: 'center'
-      }, {
-        field: 'type',
-        title: '商品分类',
         align: 'center'
       }, {
         field: 'status',
@@ -267,6 +268,42 @@ layui.define(['table', 'form', 'laydate'], function(exports) {
       });
         }
       
+    },batdelonsale:function(){
+        var dic = {};
+        dic['checkData'] = 'all';
+        dic['access_token'] = layui.data('layuiAdmin').access_token
+        layer.confirm('确定清除所有商品的特价？', function(index) {
+         $.ajax({
+            url: setter.http + 'delonsaleGood/',
+            type: 'POST',
+            data: dic,
+            error: function(request) {
+              layer.alert("清除商品特价失败", {
+                icon: 2
+              });
+            },
+            success: function(data) {
+              if (data['code'] == 0) {
+
+                layer.msg('清除商品特价成功', {
+                  icon: 1
+                });
+                table.reload('LAY-app-content-list', {
+                  page: {
+                    curr: $('.layui-laypage-curr em:eq(1)').text()
+                  }
+                });
+              } else if (data['code'] == '1001') {
+                admin.exit();
+              } else {
+                layer.alert("清除商品特价失败!", {
+                  icon: 2
+                });
+              }
+            }
+          });
+          layer.close(index);
+        });
     }
 
     //添加
@@ -527,6 +564,106 @@ layui.define(['table', 'form', 'laydate'], function(exports) {
         });
       }
 
+    }else if(obj.event === 'onsale'){
+      var dic = {};
+      //console.log(data)
+      dic['checkData'] = data['id']
+      dic['access_token'] = layui.data('layuiAdmin').access_token
+      
+      admin.popup({
+        title: '编辑特价',
+        area: ['380px', '250px'],
+        id: 'LAY-popup-content-onsale',
+        success: function(layero, index) {
+          view(this.id).render('app/content/nsale', data).done(function() {
+            //console.log(data);
+            form.render(null, 'layuiadmin-app-form-list');
+
+            //监听提交
+            form.on('submit(layuiadmin-app-form-submit)', function(data) {
+              var field = data.field; //获取提交的字段
+              field['access_token'] = layui.data('layuiAdmin').access_token
+                //layer.alert(JSON.stringify(field));
+                //提交 Ajax 成功后，关闭当前弹层并重载表格
+              if (parseInt(field['price']) <= parseInt(field['origin_price'])) {
+                layer.msg("失败！活动价不能低于原价！！！", {
+                  icon: 2
+                });
+              } else {
+                $.ajax({
+                  url: setter.http + 'onsaleGood/',
+                  type: 'POST',
+                  data: field,
+                  error: function(request) { //请求失败之后的操作
+                    layer.alert("特价失败", {
+                      icon: 2
+                    });
+                  },
+                  success: function(data) { //请求成功之后的操作
+                    if (data['code'] == 0) {
+                      table.reload('LAY-app-content-list'); //重载表格
+                      layer.msg('特价成功', {
+                        icon: 1
+                      });
+                    } else if (data['code'] == 3) {
+                      layer.alert("活动价高于原价,请重新更新!", {
+                        icon: 2
+                      });
+                    }else {
+                      layer.alert("特价失败!", {
+                        icon: 2
+                      });
+                    }
+                  }
+                });
+
+              }
+
+              layer.close(index); //执行关闭
+            });
+          });
+        }
+      });
+
+     
+    }else if(obj.event === 'delonsale'){
+      var dic = {};
+      //console.log(data)
+      dic['checkData'] = data['id']
+      dic['access_token'] = layui.data('layuiAdmin').access_token
+      layer.confirm('确定清除此商品的特价？', function(index) {
+        $.ajax({
+          url: setter.http + 'delonsaleGood/',
+          type: 'POST',
+          data: dic,
+          error: function(request) {
+            layer.alert("清除商品特价失败", {
+              icon: 2
+            });
+          },
+          success: function(data) {
+            if (data['code'] == 0) {
+
+              layer.msg('清除商品特价成功', {
+                icon: 1
+              });
+              table.reload('LAY-app-content-list', {
+                page: {
+                  curr: $('.layui-laypage-curr em:eq(1)').text()
+                }
+              });
+            } else if (data['code'] == '1001') {
+              admin.exit();
+            } else {
+              layer.alert("清除商品特价失败!", {
+                icon: 2
+              });
+            }
+          }
+        });
+        layer.close(index);
+      });
+
     }
   });
 
@@ -597,8 +734,10 @@ layui.define(['table', 'form', 'laydate'], function(exports) {
                   curr: deleteJumpPage(obj)
                 }
               });
-            } else if (data['code'] == '1001') {
-              admin.exit();
+            } else if (data['code'] == 2) {
+              layer.alert("该分类下存在商品，无法删除！", {
+                icon: 2
+              });
             } else {
               layer.alert("分类删除失败!", {
                 icon: 2
@@ -714,8 +853,10 @@ layui.define(['table', 'form', 'laydate'], function(exports) {
                 }
               });
 
-            } else if (data['code'] == '1001') {
-              admin.exit();
+            } else if (data['code'] == 2) {
+              layer.alert("该分类下存在商品，无法删除!", {
+                icon: 2
+              });
             } else {
               layer.alert("分类删除失败!", {
                 icon: 2
